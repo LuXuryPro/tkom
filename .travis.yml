@@ -7,6 +7,5 @@ python:
 install:
     - pip install -U -q pytest
 script:
-    - export PYTHONPATH = "./src"
-    - py.test
+    - export PYTHONPATH="./src" py.test
 
