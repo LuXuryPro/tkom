@@ -19,10 +19,9 @@ class HTTPLexer:
         # one char tokens
         if c in ["/", ".", ":"]:
             return c
-        # collect token into accumulator
         if c == "\n":
-            raise HTTPLexerException("Expected \\r at {pos} found {c}".format(
-                pos=self.source.get_current_position(), c=c))
+            raise HTTPLexerException("Expected \\r at {pos} found \\n".format(
+                pos=self.source.get_current_position()))
         if c == "\r":
             # here w expect that next char is \n (LF)
             lf = self.source.next_char()
