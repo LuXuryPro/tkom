@@ -36,5 +36,10 @@ class Source:
     def pop_pos(self):
         self.__current = self.__saved_pos
 
+    def is_stream_end(self):
+        return self.__current == len(self.__storage)
+
+    def is_stream_start(self):
+        return self.__current == -1
 
 

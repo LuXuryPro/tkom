@@ -40,7 +40,6 @@ def test_lexer_get_next_token_get_prev_token():
     assert lexer.prev_token() == "1"
     assert lexer.prev_token() == "/"
     assert lexer.prev_token() == "HTTP"
-    # pdb.set_trace()
     assert lexer.prev_token() == ""
 
 def test_lexer_get_next_token_big_spaces():
@@ -120,4 +119,50 @@ def test_lexer_exception_empty_second():
     source = Source("")
     lexer = HTTPLexer(source)
     assert lexer.prev_token() == ""
+    assert lexer.prev_token() == ""
+
+def test_lexer_get_next_past_end_token_get_prev_token():
+    source = Source("HTTP/1.1\r\n")
+    lexer = HTTPLexer(source)
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "."
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "\r\n"
+
+    # called 2 times
+    assert lexer.next_token() == ""
+    assert lexer.next_token() == ""
+
+    assert lexer.prev_token() == "\r\n"
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "."
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "/"
+    assert lexer.prev_token() == "HTTP"
+    assert lexer.prev_token() == ""
+
+def test_lexer_get_next_token_get_prev_past_start_token():
+    source = Source("HTTP/1.1\r\n")
+    lexer = HTTPLexer(source)
+    # called 2 times
+    assert lexer.prev_token() == ""
+    assert lexer.prev_token() == ""
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "."
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "\r\n"
+
+    assert lexer.next_token() == ""
+    assert lexer.next_token() == ""
+
+    assert lexer.prev_token() == "\r\n"
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "."
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "/"
+    assert lexer.prev_token() == "HTTP"
     assert lexer.prev_token() == ""
