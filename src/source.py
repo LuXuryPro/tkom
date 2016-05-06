@@ -3,43 +3,58 @@
 
 class Source:
     def __init__(self, raw_source=""):
-        self.__storage = []
-        self.__current = -1
-        self.__saved_pos = -1
-        self.__line = 0
+        self._storage = []
+        self._current_position = -1
+        self._previous_tokens_start_position_stack = []
         for char in raw_source:
-            self.__storage.append(char)
+            self._storage.append(char)
 
     def next_char(self):
-        self.__current += 1
-        if self.__current >= len(self.__storage):
-            self.__current = len(self.__storage)
+        self._current_position += 1
+        if self._current_position >= len(self._storage):
+            self._current_position = len(self._storage)
             return ""
-        return self.__storage[self.__current]
+        return self._storage[self._current_position]
 
     def prev_char(self):
-        self.__current -= 1
-        if self.__current < 0:
-            self.__current = -1
+        self._current_position -= 1
+        if self._current_position < 0:
+            self._current_position = -1
             return ""
-        return self.__storage[self.__current]
+        return self._storage[self._current_position]
 
-    def get_current_position(self):
-        return self.__current
+    def get_current_position(self) -> int:
+        return self._current_position
 
-    def set_current_position(self, position):
-        self.__current = position
+    def _set_current_position(self, position):
+        self._current_position = position
 
-    def push_pos(self):
-        self.__saved_pos = self.__current
+    def push_position(self):
+        # save our position for easy come back
+        if not self.is_stream_end():
+            # we dont want to save same posionion every time someone call next_token when
+            # there is no more chars in steam it will lead to duplicated posiotions
+            self._previous_tokens_start_position_stack.append(self.get_current_position())
 
-    def pop_pos(self):
-        self.__current = self.__saved_pos
+    def pop_position(self):
+        if len(self._previous_tokens_start_position_stack) > 1:
+            # remove current token start pos from stack
+            self._previous_tokens_start_position_stack.pop()
+            # get previous token start pos from stack
+            prev_pos = self._previous_tokens_start_position_stack[-1]
+            self._set_current_position(prev_pos)
+        elif len(self._previous_tokens_start_position_stack) == 1:
+            # we came back to begining -1 is on stack
+            curr_pos = self._previous_tokens_start_position_stack.pop()
+            self._set_current_position(curr_pos)
 
     def is_stream_end(self):
-        return self.__current == len(self.__storage)
+        return self._current_position == len(self._storage)
 
     def is_stream_start(self):
-        return self.__current == -1
+        return self._current_position == -1
+
+    def is_save_stack_empty(self) -> bool:
+        return not bool(len(self._previous_tokens_start_position_stack))
 
 

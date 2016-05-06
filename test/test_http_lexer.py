@@ -79,8 +79,9 @@ def test_lexer_exceptions():
     assert lexer.next_token() == "1"
     assert lexer.next_token() == "."
     assert lexer.next_token() == "1"
-    with pytest.raises(HTTPLexerException):
+    with pytest.raises(HTTPLexerException) as e:
         assert lexer.next_token()
+    assert str(e.value) == "Not expected \\n at 32"
 
 def test_lexer_exceptions_second_cr():
     source = Source("POST /plugins/phsys.php HTTP/1.1\r")
@@ -99,8 +100,9 @@ def test_lexer_exceptions_second_cr():
     assert lexer.next_token() == "1"
     assert lexer.next_token() == "."
     assert lexer.next_token() == "1"
-    with pytest.raises(HTTPLexerException):
+    with pytest.raises(HTTPLexerException) as e:
         lexer.next_token()
+    assert str(e.value) == "Expected \\n at 33 found "
 
 def test_lexer_exceptions_second():
     source = Source("n\n")

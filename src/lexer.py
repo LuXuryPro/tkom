@@ -13,7 +13,6 @@ class Lexer:
             - source: source - Source class object which will provide char stream
         """
         self.source = source
-        self.prev_tokens_start_pos = []
 
     def _get_token(self):
         raise NotImplementedError( "Not implemented here" )
@@ -24,14 +23,8 @@ class Lexer:
 
         Returns string or "" if EOF
         """
-        # save our positon for easy come back
-        if not self.source.is_stream_end(): 
-            # we dont want to save same posionion every time someone call next_token when
-            # there is no more chars in steam it will lead to duplicated posiotions
-            self.prev_tokens_start_pos.append(self.source.get_current_position())
-            return self._get_token()
-        else:
-            return ""
+        self.source.push_position()
+        return self._get_token()
 
     def prev_token(self) -> str:
         """
@@ -39,16 +32,8 @@ class Lexer:
 
         Returns string or "" if EOF
         """
-        if len(self.prev_tokens_start_pos) > 1:
-            # remove current token start pos from stack
-            curr_pos = self.prev_tokens_start_pos.pop()
-            # get previous token start pos from stack
-            prev_pos = self.prev_tokens_start_pos[-1]
-            self.source.set_current_position(prev_pos)
-            return self._get_token()
-        elif len(self.prev_tokens_start_pos) == 1:
-            # we came back to begining -1 is on stack
-            curr_pos = self.prev_tokens_start_pos.pop()
-            self.source.set_current_position(curr_pos)
-        return ""
+        self.source.pop_position()
+        if self.source.is_save_stack_empty():
+            return ""
+        return self._get_token()
 
