@@ -25,6 +25,24 @@ def test_lexer_get_next_token():
     assert lexer.next_token() == "."
     assert lexer.next_token() == "1"
 
+def test_lexer_get_next_token_get_prev_token():
+    source = Source("HTTP/1.1\r\n")
+    lexer = HTTPLexer(source)
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "."
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "\r\n"
+
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "."
+    assert lexer.prev_token() == "1"
+    assert lexer.prev_token() == "/"
+    assert lexer.prev_token() == "HTTP"
+    # pdb.set_trace()
+    assert lexer.prev_token() == ""
+
 def test_lexer_get_next_token_big_spaces():
     source = Source("POST                 /plugins/phsys.php                  HTTP/1.1                         \r\n")
     lexer = HTTPLexer(source)
@@ -42,6 +60,8 @@ def test_lexer_get_next_token_big_spaces():
     assert lexer.next_token() == "1"
     assert lexer.next_token() == "."
     assert lexer.next_token() == "1"
+    assert lexer.next_token() == " "
+    assert lexer.next_token() == "\r\n"
 
 def test_lexer_exceptions():
     source = Source("POST /plugins/phsys.php HTTP/1.1\n\n")
@@ -62,6 +82,26 @@ def test_lexer_exceptions():
     assert lexer.next_token() == "1"
     with pytest.raises(HTTPLexerException):
         assert lexer.next_token()
+
+def test_lexer_exceptions_second_cr():
+    source = Source("POST /plugins/phsys.php HTTP/1.1\r")
+    lexer = HTTPLexer(source)
+    assert lexer.next_token() == "POST"
+    assert lexer.next_token() == " "
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "plugins"
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "phsys"
+    assert lexer.next_token() == "."
+    assert lexer.next_token() == "php"
+    assert lexer.next_token() == " "
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == "/"
+    assert lexer.next_token() == "1"
+    assert lexer.next_token() == "."
+    assert lexer.next_token() == "1"
+    with pytest.raises(HTTPLexerException):
+        lexer.next_token()
 
 def test_lexer_exceptions_second():
     source = Source("n\n")
