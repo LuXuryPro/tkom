@@ -5,7 +5,7 @@ python:
   - "3.4"
   - "3.5"
 install:
-    - pip install -U -q pytest
+    - pip install -U -q pytest pytest-pep8
 script:
     - PYTHONPATH="./src" py.test
 

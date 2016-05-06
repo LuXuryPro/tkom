@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 class Source:
     def __init__(self, raw_source=""):
         self._storage = []
@@ -32,9 +33,11 @@ class Source:
     def push_position(self):
         # save our position for easy come back
         if not self.is_stream_end():
-            # we dont want to save same posionion every time someone call next_token when
-            # there is no more chars in steam it will lead to duplicated posiotions
-            self._previous_tokens_start_position_stack.append(self.get_current_position())
+            # we dont want to save same posionion every time someone call
+            # next_token when there is no more chars in steam it will lead to
+            # duplicated posiotions
+            self._previous_tokens_start_position_stack.append(
+                    self.get_current_position())
 
     def pop_position(self):
         if len(self._previous_tokens_start_position_stack) > 1:
@@ -56,5 +59,3 @@ class Source:
 
     def is_save_stack_empty(self) -> bool:
         return not bool(len(self._previous_tokens_start_position_stack))
-
-

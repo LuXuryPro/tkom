@@ -3,8 +3,10 @@
 
 from lexer import Lexer
 
+
 class HTTPLexerException(Exception):
     pass
+
 
 class HTTPLexer(Lexer):
     def __init__(self, source) -> None:
@@ -27,7 +29,8 @@ class HTTPLexer(Lexer):
         # one char tokens can be returned immediately
         if c in ["/", ".", ":"]:
             return c
-        # if next char is \n that means \r is missing beafore it and that is an error
+        # if next char is \n that means \r is missing beafore it and that is an
+        # error
         if c == "\n":
             raise HTTPLexerException("Not expected \\n at {pos}".format(
                 pos=self.source.get_current_position()))
@@ -38,8 +41,9 @@ class HTTPLexer(Lexer):
                 return "\r\n"
             else:
                 # we have error \r is not beafore \n
-                raise HTTPLexerException("Expected \\n at {pos} found {c}".format(
-                    pos=self.source.get_current_position(), c=lf))
+                raise HTTPLexerException(
+                        "Expected \\n at {pos} found {c}".format(
+                            pos=self.source.get_current_position(), c=lf))
 
         # digits
         if c.isdigit():
@@ -56,4 +60,3 @@ class HTTPLexer(Lexer):
                 self.source.prev_char()
                 return "".join(token_accumulator)
             token_accumulator.append(c)
-

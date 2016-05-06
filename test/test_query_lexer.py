@@ -22,6 +22,7 @@ def test_query_lexer_next_token():
     assert lexer.next_token() == "\""
     assert lexer.next_token() == ""
 
+
 def test_query_lexer_prev_token():
     source = Source('method if host == "google.pl"')
     lexer = QueryLexer(source)

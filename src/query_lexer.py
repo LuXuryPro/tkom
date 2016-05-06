@@ -36,8 +36,9 @@ class QueryLexer(Lexer):
                 return c + n
             else:
                 # we have error \r is not beafore \n
-                raise QueryLexerException("Expected = or ~ at {pos} found '{c}'".format(
-                    pos=self.source.get_current_position(), c=n))
+                raise QueryLexerException(
+                        "Expected = or ~ at {pos} found '{c}'".format(
+                            pos=self.source.get_current_position(), c=n))
 
         # digits
         if c.isdigit():
@@ -54,4 +55,3 @@ class QueryLexer(Lexer):
                 self.source.prev_char()
                 return "".join(token_accumulator)
             token_accumulator.append(c)
-

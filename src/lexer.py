@@ -3,6 +3,7 @@
 
 from source import Source
 
+
 class Lexer:
     """
     Base Lexer class for other lexers
@@ -10,12 +11,13 @@ class Lexer:
     def __init__(self, source: Source) -> None:
         """
         Arguments:
-            - source: source - Source class object which will provide char stream
+            - source: source - Source class object which will provide char
+              stream
         """
         self.source = source
 
     def _get_token(self):
-        raise NotImplementedError( "Not implemented here" )
+        raise NotImplementedError("Not implemented here")
 
     def next_token(self) -> str:
         """
@@ -36,4 +38,3 @@ class Lexer:
         if self.source.is_save_stack_empty():
             return ""
         return self._get_token()
-
