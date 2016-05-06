@@ -59,11 +59,11 @@ class HTTPLexer:
         return self.get_token()
 
     def prev_token(self):
-        if len(self.prev_tokens_start_pos) != 0:
+        if len(self.prev_tokens_start_pos) > 1:
             # remove current token start pos from stack
             curr_pos = self.prev_tokens_start_pos.pop()
             # get previous token start pos from stack
-            prev_pos = self.prev_tokens_start_pos.pop()
+            prev_pos = self.prev_tokens_start_pos[-1]
             self.source.set_current_position(prev_pos)
             return self.get_token()
         else:
