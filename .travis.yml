@@ -7,5 +7,5 @@ python:
 install:
     - pip install -U -q pytest pytest-pep8
 script:
-    - PYTHONPATH="./src" py.test
+    - PYTHONPATH="./src" py.test --pep8
 
