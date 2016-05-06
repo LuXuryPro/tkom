@@ -9,9 +9,6 @@ class QueryLexerException(Exception):
 
 
 class QueryLexer(Lexer):
-    def __init__(self, source) -> None:
-        super().__init__(source)
-
     def _get_token(self) -> str:
         """
         private _get_token
