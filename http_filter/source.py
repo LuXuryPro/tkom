@@ -32,12 +32,20 @@ class Source:
 
     def push_position(self):
         # save our position for easy come back
-        if not self.is_stream_end():
-            # we dont want to save same posionion every time someone call
-            # next_token when there is no more chars in steam it will lead to
-            # duplicated posiotions
-            self._previous_tokens_start_position_stack.append(
+        if not self.is_save_stack_empty():
+            if self._previous_tokens_start_position_stack[-1]\
+                    != len(self._storage) - 1:
+                # we dont want to save last posionion every time someone call
+                # next_token when there is no more chars in steam it will lead
+                # to duplicated posiotions, so if last position
+                # ( len (self._storage) - 1 ) is on stack then we dont save it
+                # again
+                self._previous_tokens_start_position_stack.append(
                     self.get_current_position())
+        else:
+            # is stack is empty then just push onto it
+            self._previous_tokens_start_position_stack.append(
+                self.get_current_position())
 
     def pop_position(self):
         if len(self._previous_tokens_start_position_stack) > 1:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from source import Source
+from http_filter.source import Source
 
 
 def test_http_source_constructor_has_one_argument():
@@ -41,3 +41,21 @@ def test_http_source_empty_implicit():
     assert test_source.next_char() == ""
     assert test_source.prev_char() == ""
     assert test_source.prev_char() == ""
+
+
+def test_http_source_is_steam_start():
+    test_source = Source("a")
+    assert test_source.is_stream_start() == True
+    test_source.next_char()
+    assert test_source.is_stream_start() == False
+    test_source.next_char()
+    assert test_source.is_stream_start() == False
+
+
+def test_http_source_is_steam_end():
+    test_source = Source("a")
+    assert test_source.is_stream_end() == False
+    test_source.next_char()
+    assert test_source.is_stream_end() == False
+    test_source.next_char()
+    assert test_source.is_stream_end() == True

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from lexer import Lexer
+from http_filter.lexer import Lexer
 
 
 class QueryLexerException(Exception):
@@ -32,10 +32,10 @@ class QueryLexer(Lexer):
             if n in ["=", "~"]:
                 return c + n
             else:
-                # we have error \r is not beafore \n
                 raise QueryLexerException(
                         "Expected = or ~ at {pos} found '{c}'".format(
-                            pos=self.source.get_current_position(), c=n))
+                        pos=self.source.get_current_position(
+                        ), c=n))
 
         # digits
         if c.isdigit():

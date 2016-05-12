@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from source import Source
+from http_filter.source import Source
 
 
 class Lexer:
@@ -15,9 +15,6 @@ class Lexer:
               stream
         """
         self.source = source
-
-    def _get_token(self):
-        raise NotImplementedError("Not implemented here")
 
     def next_token(self) -> str:
         """

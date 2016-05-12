@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from lexer import Lexer
+from http_filter.lexer import Lexer
 
 
 class HTTPLexerException(Exception):
@@ -39,8 +39,9 @@ class HTTPLexer(Lexer):
             else:
                 # we have error \r is not beafore \n
                 raise HTTPLexerException(
-                        "Expected \\n at {pos} found {c}".format(
-                            pos=self.source.get_current_position(), c=lf))
+                    "Expected \\n at {pos} found {c}".format(
+                        pos=self.source.get_current_position(
+                        ), c=lf))
 
         # digits
         if c.isdigit():
@@ -52,7 +53,7 @@ class HTTPLexer(Lexer):
         while True:
             c = self.source.next_char()
             if c == "":
-                return c
+                return "".join(token_accumulator)
             if c in ["/", ".", ":", "\n", "\r", " "]:
                 self.source.prev_char()
                 return "".join(token_accumulator)

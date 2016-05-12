@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from http_lexer import HTTPLexer, HTTPLexerException
-from source import Source
-import pdb
+from http_filter.http_lexer import HTTPLexer, HTTPLexerException
+from http_filter.source import Source
 
 
 def test_lexer_get_next_token():
@@ -178,5 +177,19 @@ def test_lexer_get_next_token_get_prev_past_start_token():
     assert lexer.prev_token() == "."
     assert lexer.prev_token() == "1"
     assert lexer.prev_token() == "/"
+    assert lexer.prev_token() == "HTTP"
+    assert lexer.prev_token() == ""
+
+
+def test_lexer_exception_ends_with_free_text():
+    source = Source("HTTP HTTP")
+    lexer = HTTPLexer(source)
+    assert lexer.prev_token() == ""
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == " "
+    assert lexer.next_token() == "HTTP"
+    assert lexer.next_token() == ""
+    assert lexer.prev_token() == "HTTP"
+    assert lexer.prev_token() == " "
     assert lexer.prev_token() == "HTTP"
     assert lexer.prev_token() == ""
