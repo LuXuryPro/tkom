@@ -6,6 +6,6 @@ python:
 install:
     - pip install -U -q pytest pytest-pep8 pytest-cov python-coveralls
 script:
-    - PYTHONPATH="./src" py.test --pep8 --cov src
+    - python setup.py test
 after_success:
   - coveralls
