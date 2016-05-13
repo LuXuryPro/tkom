@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 from http_filter.http.lexer import HTTPLexer
+
 
 class HTTPParserException(Exception):
     pass
+
 
 class HTTPParser:
     def __init__(self, lexer):
@@ -14,7 +17,6 @@ class HTTPParser:
 
     def parse(self):
         self._parse_status()
-        
 
     def _parse_status(self):
         method = self.lexer.next_token_no_space()
@@ -34,7 +36,7 @@ class HTTPParser:
             message = self.lexer.exception_message("/", slash)
             raise HTTPParserException(message)
         self.ast["URL"].append("/")
-        
+
         string = self.lexer.next_token()
         if string == " ":
             self.lexer.prev_token()
@@ -50,7 +52,6 @@ class HTTPParser:
                 self.lexer.prev_token()
                 break
         self._parse_url()
-
 
     def _parse_signature(self):
         signature = self.lexer.next_token()

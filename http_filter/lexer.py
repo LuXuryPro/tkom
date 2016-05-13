@@ -37,7 +37,6 @@ class Lexer:
         else:
             return token
 
-
     def prev_token(self) -> str:
         """
         Provide previous token from stream
@@ -51,5 +50,5 @@ class Lexer:
 
     def exception_message(self, expected, found) -> str:
         position = self.source.get_current_position()
-        return "Expected {e} found {f} at {a}".format(e=repr(expected),
-                f=repr(found), a=position)
+        return "Expected {e} found {f} at {a}".format(
+                e=repr(expected), f=repr(found), a=position)
