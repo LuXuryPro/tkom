@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from http_filter.query_lexer import QueryLexer, QueryLexerException
+from http_filter.query.lexer import QueryLexer, QueryLexerException
 from http_filter.source import Source
 
 

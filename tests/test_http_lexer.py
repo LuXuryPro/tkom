@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from http_filter.http_lexer import HTTPLexer, HTTPLexerException
+from http_filter.http.lexer import HTTPLexer, HTTPLexerException
 from http_filter.source import Source
 
 
