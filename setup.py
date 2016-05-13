@@ -23,5 +23,10 @@ setup(name='http-filter',
       url='http://github.com/LuXuryPro/tkom',
       packages=['http_filter'],
       tests_require=['pytest', 'pytest-cov', 'pytest-pep8'],
+      entry_points={
+          'console_scripts': [
+              'http-filter = http_filter.__main__:main'
+          ]
+      },
       cmdclass={'test': PyTest},
       zip_safe=False)

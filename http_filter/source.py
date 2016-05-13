@@ -67,3 +67,12 @@ class Source:
 
     def is_save_stack_empty(self) -> bool:
         return not bool(len(self._previous_tokens_start_position_stack))
+
+    def point_on_error(self):
+        index = self.get_current_position()
+        message = "".join(self._storage)
+        message += "\n"
+        for i in range(index):
+            message += " "
+        message += "^"
+        return message

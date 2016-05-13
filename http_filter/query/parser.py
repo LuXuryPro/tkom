@@ -12,6 +12,7 @@ class QueryParser:
     def __init__(self, lexer: QueryLexer) -> None:
         self.lexer = lexer
         self.ast = {}
+        self.fields = []
 
     def parse(self):
         self._parse_fields()
@@ -28,7 +29,12 @@ class QueryParser:
             if token == "if":
                 self.lexer.prev_token()
                 break
-            self.ast["Fields"].append(token)
+            elif token == ",":
+                # empty comma
+                message = self.lexer.exception_message("string", token)
+                raise QueryParserException(message)
+
+            self.fields.append(token)
             maybe_comma = self.lexer.next_token_no_space()
             if maybe_comma != ",":
                 self.lexer.prev_token()
@@ -65,9 +71,18 @@ class QueryParser:
         if token not in ["not", "("]:
             key = token
             operator = self.lexer.next_token_no_space()
+            if operator not in ["==", "=~"]:
+                message = self.lexer.exception_message("== or =~", operator)
+                raise QueryParserException(message)
             left_quote = self.lexer.next_token_no_space()
+            if left_quote != "\"":
+                message = self.lexer.exception_message("\"", left_quote)
+                raise QueryParserException(message)
             value = self.lexer.next_token()
             right_quote = self.lexer.next_token()
+            if right_quote != "\"":
+                message = self.lexer.exception_message("\"", right_quote)
+                raise QueryParserException(message)
 
             self.ast = {"t": "e", "k": key, "o": operator, "v": value}
         elif token == "not":
@@ -79,4 +94,6 @@ class QueryParser:
             token = self.lexer.next_token_no_space()
             if token != ")":
                 message = self.lexer.exception_message(")", token)
+                message += "\n"
+                message += self.lexer.source.point_on_error()
                 raise QueryParserException(message)
