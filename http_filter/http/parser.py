@@ -9,7 +9,7 @@ class HTTPParserException(Exception):
 
 
 class HTTPParser:
-    def __init__(self, lexer):
+    def __init__(self, lexer: HTTPLexer):
         self.lexer = lexer
         self.ast = {}
         self.ast["URL"] = []
