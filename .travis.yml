@@ -1,12 +1,16 @@
 language: python
+
 python:
-  - "3.3"
-  - "3.4"
-  - "3.5"
+    - "3.3"
+    - "3.4"
+    - "3.5"
+
 install:
     - pip install -U pytest pytest-pep8 pytest-cov coveralls
-    - python setup.py --verbose install
+    - pip install -e .
+
 script:
-    - python setup.py --verbose test
+    - py.test --cov http_filter --pep8
+
 after_success:
-  - coveralls
+    - coveralls
