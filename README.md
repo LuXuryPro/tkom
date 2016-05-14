@@ -13,3 +13,8 @@ pip install git+https://github.com/LuXuryPro/tkom
 http-filter -i input.txt 'url if method == "GET"'
 http-filter -i input.txt 'method if host =~ "pl"'
 ```
+
+## Update
+```bash
+pip install -U git+https://github.com/LuXuryPro/tkom
+```
