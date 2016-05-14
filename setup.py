@@ -1,5 +1,5 @@
 import sys
-from setuptools import setup
+from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
 
@@ -21,7 +21,7 @@ setup(name='http-filter',
       version='0.1',
       description='',
       url='http://github.com/LuXuryPro/tkom',
-      packages=['http_filter'],
+      packages=find_packages(),
       tests_require=['pytest', 'pytest-cov', 'pytest-pep8'],
       entry_points={
           'console_scripts': [
