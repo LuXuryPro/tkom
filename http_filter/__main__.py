@@ -11,6 +11,31 @@ from http_filter.query.matcher import Matcher
 from http_filter.source import Source
 
 
+def do_filtering(file, query_parser):
+    packet = []
+    for line in file.readlines():
+        line = line.strip()
+        if line == "=====":
+            source_string = "".join(packet)
+            http_parser = HTTPParser(HTTPLexer(Source(source_string)))
+            http_parser.parse()
+            matcher = Matcher(http_parser, query_parser)
+            if matcher.matches():
+                print("##########")
+                if query_parser.fields:
+                    for field in query_parser.fields:
+                        try:
+                            val = http_parser[field]
+                            print(field + " = " + val)
+                        except:
+                            continue
+                else:
+                    print(http_parser)
+            packet = []
+        else:
+            packet.append(line + "\r\n")
+
+
 def main(args=None):
     parser = argparse.ArgumentParser(description="HTTP Request filter tool")
     parser.add_argument("query", help="Query enclosed in \'\'")
@@ -25,30 +50,13 @@ def main(args=None):
     except Exception as e:
         print(str(e))
         return
+    if a.OUTPUT_FILE:
+        sys.stdout = open(a.OUTPUT_FILE, "a")
     if a.INPUT_FILE:
         with open(a.INPUT_FILE) as f:
-            packet = []
-            for line in f.readlines():
-                line = line.strip()
-                if line == "=====":
-                    source_string = "".join(packet)
-                    http_parser = HTTPParser(HTTPLexer(Source(source_string)))
-                    http_parser.parse()
-                    matcher = Matcher(http_parser, query_parser)
-                    if matcher.matches():
-                        print("##########")
-                        if query_parser.fields:
-                            for field in query_parser.fields:
-                                try:
-                                    val = http_parser[field]
-                                    print(field + " = " + val)
-                                except:
-                                    continue
-                        else:
-                            print(http_parser)
-                    packet = []
-                else:
-                    packet.append(line + "\r\n")
+            do_filtering(f, query_parser)
+    else:
+        do_filtering(sys.stdin, query_parser)
 
 
 if __name__ == "__main__":
