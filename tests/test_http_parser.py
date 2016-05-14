@@ -4,7 +4,6 @@
 from http_filter.source import Source
 from http_filter.http.lexer import HTTPLexer
 from http_filter.http.parser import HTTPParser
-import pytest
 
 
 def test_http_parser_standard_packet():
@@ -14,16 +13,16 @@ def test_http_parser_standard_packet():
                     "\r\n")
     p = HTTPParser(HTTPLexer(source))
     p.parse()
-    assert p.ast["Method"] == "GET"
-    assert p.ast["URL"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
+    assert p.ast["method"] == "GET"
+    assert p.ast["url"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
     assert p.ast["signature"] == "HTTP"
-    assert p.ast["Version"]["Major"] == "0"
-    assert p.ast["Version"]["Minor"] == "9"
-    assert p.ast["Headers"][0]["key"] == "a"
-    assert p.ast["Headers"][0]["val"] == ["b"]
-    assert p.ast["Headers"][1]["key"] == "c"
-    assert p.ast["Headers"][1]["val"] == ["d"]
-    assert p.ast["Body"] == []
+    assert p.ast["version"]["major"] == "0"
+    assert p.ast["version"]["minor"] == "9"
+    assert p.ast["headers"][0]["key"] == "a"
+    assert p.ast["headers"][0]["val"] == ["b"]
+    assert p.ast["headers"][1]["key"] == "c"
+    assert p.ast["headers"][1]["val"] == ["d"]
+    assert p.ast["body"] == []
 
 
 def test_http_parser_post_packet_with_body():
@@ -34,16 +33,16 @@ def test_http_parser_post_packet_with_body():
                     "body")
     p = HTTPParser(HTTPLexer(source))
     p.parse()
-    assert p.ast["Method"] == "POST"
-    assert p.ast["URL"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
+    assert p.ast["method"] == "POST"
+    assert p.ast["url"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
     assert p.ast["signature"] == "HTTP"
-    assert p.ast["Version"]["Major"] == "0"
-    assert p.ast["Version"]["Minor"] == "9"
-    assert p.ast["Headers"][0]["key"] == "a"
-    assert p.ast["Headers"][0]["val"] == ["b"]
-    assert p.ast["Headers"][1]["key"] == "c"
-    assert p.ast["Headers"][1]["val"] == ["d"]
-    assert p.ast["Body"] == ["body"]
+    assert p.ast["version"]["major"] == "0"
+    assert p.ast["version"]["minor"] == "9"
+    assert p.ast["headers"][0]["key"] == "a"
+    assert p.ast["headers"][0]["val"] == ["b"]
+    assert p.ast["headers"][1]["key"] == "c"
+    assert p.ast["headers"][1]["val"] == ["d"]
+    assert p.ast["body"] == ["body"]
 
 
 def test_http_parser_whitespace_tolerance():
@@ -55,19 +54,18 @@ def test_http_parser_whitespace_tolerance():
                     "body")
     p = HTTPParser(HTTPLexer(source))
     p.parse()
-    assert p.ast["Method"] == "POST"
-    assert p.ast["URL"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
+    assert p.ast["method"] == "POST"
+    assert p.ast["url"] == ['/', 'test', '.', 'php', '/', '/', 'asd']
     assert p.ast["signature"] == "HTTP"
-    assert p.ast["Version"]["Major"] == "0"
-    assert p.ast["Version"]["Minor"] == "9"
-    assert p.ast["Headers"][0]["key"] == "a"
-    assert p.ast["Headers"][0]["val"] == ["b"]
-    assert p.ast["Headers"][1]["key"] == "c"
-    assert p.ast["Headers"][1]["val"] == ["d", " "]
-    assert p.ast["Headers"][2]["key"] == "e"
-    assert p.ast["Headers"][2]["val"] == ["f"]
-    assert p.ast["Body"] == ["body"]
-
+    assert p.ast["version"]["major"] == "0"
+    assert p.ast["version"]["minor"] == "9"
+    assert p.ast["headers"][0]["key"] == "a"
+    assert p.ast["headers"][0]["val"] == ["b"]
+    assert p.ast["headers"][1]["key"] == "c"
+    assert p.ast["headers"][1]["val"] == ["d", " "]
+    assert p.ast["headers"][2]["key"] == "e"
+    assert p.ast["headers"][2]["val"] == ["f"]
+    assert p.ast["body"] == ["body"]
 
 
 def test_http_parser_real_packet():
@@ -85,5 +83,3 @@ def test_http_parser_real_packet():
     p = HTTPParser(HTTPLexer(source))
     p.parse()
     print(p)
-
-

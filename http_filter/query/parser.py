@@ -21,9 +21,9 @@ class QueryParser:
             message = self.lexer.exception_message("if", token)
             raise QueryParserException(message)
         self._parse_expression()
+        token = self.lexer.next_token_no_space()
 
     def _parse_fields(self):
-        self.ast["Fields"] = []
         while True:
             token = self.lexer.next_token_no_space()
             if token == "if":
@@ -84,7 +84,7 @@ class QueryParser:
                 message = self.lexer.exception_message("\"", right_quote)
                 raise QueryParserException(message)
 
-            self.ast = {"t": "e", "k": key, "o": operator, "v": value}
+            self.ast = {"k": key, "f": operator, "v": value}
         elif token == "not":
             self._parse_factor()
             not_expr = {"o": "not", "child": self.ast}
