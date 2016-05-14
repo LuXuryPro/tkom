@@ -116,3 +116,18 @@ class HTTPParser:
             if token == "":
                 break
             self.ast["Body"].append(token)
+
+
+    def __str__(self):
+        rep = "==HTTP Request==\n"
+        rep += "Method: " + self.ast["Method"] + "\n"
+        rep += "URL: " + "".join(self.ast["URL"]) + "\n"
+        rep += "Version Major: " + self.ast["Version"]["Major"] + "\n"
+        rep += "Version Minor: " + self.ast["Version"]["Minor"] + "\n"
+        rep += "Headers:\n"
+        for header in self.ast["Headers"]:
+            rep += "\t" + header["key"] + " = " + "".join(header["val"]) + "\n"
+        if self.ast["Body"]:
+            rep += "Body:\n"
+            rep += "".join(self.ast["Body"])
+        return rep

@@ -67,3 +67,23 @@ def test_http_parser_whitespace_tolerance():
     assert p.ast["Headers"][2]["key"] == "e"
     assert p.ast["Headers"][2]["val"] == ["f"]
     assert p.ast["Body"] == ["body"]
+
+
+
+def test_http_parser_real_packet():
+    source = Source(
+        "GET /ajax/libs/jquery/1.7.1/jquery.min.js HTTP/1.1\r\n"
+        "Host: ajax.googleapis.com\r\n"
+        "Connection: keep-alive\r\n"
+        "Cache-Control: max-age=0\r\n"
+        "Accept: */*\r\n"
+        "Accept-Encoding: gzip, deflate, sdch\r\n"
+        "Accept-Language: pl-PL,pl;q=0.8,en-US;q=0.6,en;q=0.4\r\n"
+        "If-Modified-Since: Fri, 16 Oct 2015 18:27:31 GMT\r\n"
+        "\r\n"
+                    )
+    p = HTTPParser(HTTPLexer(source))
+    p.parse()
+    print(p)
+
+
