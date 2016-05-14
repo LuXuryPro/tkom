@@ -15,17 +15,19 @@ class QueryParser:
         self.fields = []
 
     def parse(self):
-        self._parse_fields()
-        token = self.lexer.next_token()
-        if token != "if":
-            message = self.lexer.exception_message("if", token)
-            raise QueryParserException(message)
-        self._parse_expression()
-        token = self.lexer.next_token_no_space()
+        if self._parse_fields():
+            token = self.lexer.next_token()
+            if token != "if":
+                message = self.lexer.exception_message("if", token)
+                raise QueryParserException(message)
+            self._parse_expression()
+            token = self.lexer.next_token_no_space()
 
     def _parse_fields(self):
         while True:
             token = self.lexer.next_token_no_space()
+            if token == "":
+                return False
             if token == "if":
                 self.lexer.prev_token()
                 break
@@ -39,6 +41,7 @@ class QueryParser:
             if maybe_comma != ",":
                 self.lexer.prev_token()
                 break
+        return True
 
     def _parse_expression(self):
         self._parse_term()
@@ -68,7 +71,7 @@ class QueryParser:
 
     def _parse_factor(self):
         token = self.lexer.next_token_no_space()
-        if token not in ["not", "("]:
+        if token not in ["not", "(", ""]:
             key = token
             operator = self.lexer.next_token_no_space()
             if operator not in ["==", "=~"]:
@@ -97,3 +100,5 @@ class QueryParser:
                 message += "\n"
                 message += self.lexer.source.point_on_error()
                 raise QueryParserException(message)
+        elif token == "":
+            return

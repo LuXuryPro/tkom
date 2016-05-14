@@ -46,9 +46,7 @@ class QueryLexer(Lexer):
         token_accumulator.append(c)
         while True:
             c = self.source.next_char()
-            if c == "":
-                return c
-            if c in [",", "(", ")", "\"", " "]:
+            if c in [",", "(", ")", "\"", " ", "", "=", "~"]:
                 self.source.prev_char()
                 return "".join(token_accumulator)
             token_accumulator.append(c)

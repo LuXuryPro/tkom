@@ -82,4 +82,3 @@ def test_http_parser_real_packet():
                     )
     p = HTTPParser(HTTPLexer(source))
     p.parse()
-    print(p)

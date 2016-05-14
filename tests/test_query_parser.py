@@ -12,4 +12,27 @@ def test_query_parser_simple_query():
     source = Source("url if (url == \"google.com\") and")
     p = QueryParser(QueryLexer(source))
     p.parse()
-    pp.pprint(p.ast)
+
+
+def test_query_parser_small_query():
+    source = Source("url if")
+    p = QueryParser(QueryLexer(source))
+    p.parse()
+
+
+def test_query_parser_no_spaces():
+    source = Source("host if method==\"POST\"")
+    p = QueryParser(QueryLexer(source))
+    p.parse()
+
+
+def test_query_parser_empty():
+    source = Source("")
+    p = QueryParser(QueryLexer(source))
+    p.parse()
+
+
+def test_query_parser_next_simple():
+    source = Source("if host =~ \"pl\"")
+    p = QueryParser(QueryLexer(source))
+    p.parse()

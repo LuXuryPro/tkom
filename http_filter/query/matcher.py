@@ -10,7 +10,9 @@ class Matcher:
         self.query = query
 
     def matches(self) -> bool:
-        return self.match_tree(self.query.ast)
+        if self.query.ast:
+            return self.match_tree(self.query.ast)
+        return True
 
     def match_tree(self, root) -> bool:
         if "o" in root:

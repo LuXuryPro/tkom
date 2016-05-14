@@ -71,3 +71,22 @@ def test_query_lexer_exceptions_tilde():
     with pytest.raises(QueryLexerException) as e:
         assert lexer.next_token() == "=="
     assert str(e.value) == "Unexpected ~ at 15"
+
+
+def test_query_lexer_small_query():
+    source = Source('method if')
+    lexer = QueryLexer(source)
+    assert lexer.next_token() == "method"
+    assert lexer.next_token_no_space() == "if"
+
+
+def test_query_lexer_no_space():
+    source = Source('method if method==\"GET\"')
+    lexer = QueryLexer(source)
+    assert lexer.next_token() == "method"
+    assert lexer.next_token_no_space() == "if"
+    assert lexer.next_token_no_space() == "method"
+    assert lexer.next_token_no_space() == "=="
+    assert lexer.next_token_no_space() == "\""
+    assert lexer.next_token_no_space() == "GET"
+    assert lexer.next_token_no_space() == "\""
