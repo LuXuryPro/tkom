@@ -20,7 +20,11 @@ def main(args=None):
                         help="output file (witout it writes to STDOUT)")
     a = parser.parse_args()
     query_parser = QueryParser(QueryLexer(Source(a.query)))
-    query_parser.parse()
+    try:
+        query_parser.parse()
+    except Exception as e:
+        print(str(e))
+        return
     if a.INPUT_FILE:
         with open(a.INPUT_FILE) as f:
             packet = []
@@ -32,7 +36,16 @@ def main(args=None):
                     http_parser.parse()
                     matcher = Matcher(http_parser, query_parser)
                     if matcher.matches():
-                        print(http_parser)
+                        print("##########")
+                        if query_parser.fields:
+                            for field in query_parser.fields:
+                                try:
+                                    val = http_parser[field]
+                                    print(field + " = " + val)
+                                except:
+                                    continue
+                        else:
+                            print(http_parser)
                     packet = []
                 else:
                     packet.append(line + "\r\n")

@@ -120,32 +120,46 @@ class HTTPParser:
 
     def __getitem__(self, item: str) -> str:
         try:
-            return self.ast[item.lower()]
+            val = self.ast[item.lower()]
+            if type(val) is str:
+                return val
+            else:
+                return "".join(val)
         except:
             for header in self.ast["headers"]:
                 if header["key"] == item.lower():
-                    return header["val"]
+                    if type(header["val"]) is str:
+                        return header["val"]
+                    else:
+                        return "".join(header["val"])
+            if item.lower() == "major":
+                return self.ast["version"]["major"]
+            if item.lower() == "minor":
+                return self.ast["version"]["minor"]
         raise IndexError
 
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item: str) -> bool:
         try:
             return self.ast[item.lower()]
         except:
             for header in self.ast["headers"]:
                 if header["key"] == item.lower():
                     return header["val"]
+            if item.lower() == "major":
+                return self.ast["version"]["major"]
+            if item.lower() == "minor":
+                return self.ast["version"]["minor"]
         return False
 
     def __str__(self):
-        rep = "==HTTP Request==\n"
-        rep += "Method: " + self.ast["method"] + "\n"
-        rep += "URL: " + "".join(self.ast["url"]) + "\n"
-        rep += "Version Major: " + self.ast["version"]["major"] + "\n"
-        rep += "Version Minor: " + self.ast["version"]["minor"] + "\n"
-        rep += "Headers:\n"
+        rep = ""
+        rep += "Method = " + self.ast["method"] + "\n"
+        rep += "URL = " + "".join(self.ast["url"]) + "\n"
+        rep += "Version Major = " + self.ast["version"]["major"] + "\n"
+        rep += "Version Minor = " + self.ast["version"]["minor"] + "\n"
         for header in self.ast["headers"]:
-            rep += "\t" + header["key"] + " = " + "".join(header["val"]) + "\n"
+            rep += header["key"] + " = " + "".join(header["val"]) + "\n"
         if self.ast["body"]:
-            rep += "body:\n"
+            rep += "body = "
             rep += "".join(self.ast["body"])
         return rep

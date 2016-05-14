@@ -18,8 +18,11 @@ class QueryParser:
         if self._parse_fields():
             token = self.lexer.next_token()
             if token != "if":
-                message = self.lexer.exception_message("if", token)
-                raise QueryParserException(message)
+                if self.lexer.next_token_no_space() != "":
+                    message = self.lexer.exception_message("if", token)
+                    raise QueryParserException(message)
+                else:
+                    return
             self._parse_expression()
             token = self.lexer.next_token_no_space()
 

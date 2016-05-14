@@ -37,10 +37,6 @@ class QueryLexer(Lexer):
                         pos=self.source.get_current_position(
                         ), c=n))
 
-        # digits
-        if c.isdigit():
-            return c
-
         # collect all chars till whitespace or \n or digit
         token_accumulator = []
         token_accumulator.append(c)
