@@ -18,7 +18,7 @@ class PyTest(TestCommand):
 
 
 setup(name='http-filter',
-      version='0.1',
+      version='0.2',
       description='',
       url='http://github.com/LuXuryPro/tkom',
       packages=find_packages(),
