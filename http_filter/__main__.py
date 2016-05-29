@@ -3,22 +3,31 @@
 import sys
 import argparse
 
-from http_filter.http.lexer import HTTPLexer
-from http_filter.http.parser import HTTPParser
-from http_filter.query.parser import QueryParser
-from http_filter.query.lexer import QueryLexer
+from http_filter.http.lexer import HTTPLexer, HTTPLexerException
+from http_filter.http.parser import HTTPParser, HTTPParserException
+from http_filter.query.parser import QueryParser, QueryParserException
+from http_filter.query.lexer import QueryLexer, QueryLexerException
 from http_filter.query.matcher import Matcher
 from http_filter.source import Source
 
 
-def do_filtering(file, query_parser):
+def do_filtering(file_stream, query_parser):
     packet = []
-    for line in file.readlines():
+    for line in file_stream.readlines():
         line = line.strip()
         if line == "=====":
             source_string = "".join(packet)
             http_parser = HTTPParser(HTTPLexer(Source(source_string)))
-            http_parser.parse()
+            try:
+                http_parser.parse()
+            except HTTPLexerException as e:
+                print("HTTP Lexer Exception:")
+                print(str(e))
+                return
+            except HTTPParserException as e:
+                print("HTTP Parser Exception:")
+                print(str(e))
+                return
             matcher = Matcher(http_parser, query_parser)
             if matcher.matches():
                 print("##########")
@@ -47,7 +56,12 @@ def main(args=None):
     query_parser = QueryParser(QueryLexer(Source(a.query)))
     try:
         query_parser.parse()
-    except Exception as e:
+    except QueryLexerException as e:
+        print("Query Lexer Exception:")
+        print(str(e))
+        return
+    except QueryParserException as e:
+        print("Query Parser Exception:")
         print(str(e))
         return
     if a.OUTPUT_FILE:
