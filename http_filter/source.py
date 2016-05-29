@@ -7,14 +7,26 @@ class Source:
         self._storage = []
         self._current_position = -1
         self._previous_tokens_start_position_stack = []
+        self.line = 1
+        self.line_position = 0
+        self.saved_line_lenght = 0
+        self.switch_line = False
         for char in raw_source:
             self._storage.append(char)
 
     def next_char(self):
         self._current_position += 1
+        self.line_position += 1
         if self._current_position >= len(self._storage):
             self._current_position = len(self._storage)
             return ""
+        if self.switch_line:
+            self.line += 1
+            self.saved_line_lenght = self.line_position
+            self.line_position = 1
+            self.switch_line = False
+        if self._storage[self._current_position] == "\n":
+            self.switch_line = True
         return self._storage[self._current_position]
 
     def prev_char(self):
@@ -22,6 +34,12 @@ class Source:
         if self._current_position < 0:
             self._current_position = -1
             return ""
+        if self._storage[self._current_position] == "\n":
+            self.switch_line = True
+            self.line -= 1
+            self.line_position = self.saved_line_lenght - 1
+        else:
+            self.line_position -= 1
         return self._storage[self._current_position]
 
     def get_current_position(self) -> int:
@@ -76,3 +94,12 @@ class Source:
             message += " "
         message += "^"
         return message
+
+    def get_current_line(self):
+        return self.line
+
+    def get_current_line_pos(self):
+        return self.line_position
+
+    def __str__(self):
+        return "".join(self._storage)

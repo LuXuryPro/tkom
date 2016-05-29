@@ -8,6 +8,7 @@ class Lexer:
     """
     Base Lexer class for other lexers
     """
+
     def __init__(self, source: Source) -> None:
         """
         Arguments:
@@ -49,6 +50,8 @@ class Lexer:
         return self._get_token()
 
     def exception_message(self, expected, found) -> str:
-        position = self.source.get_current_position()
-        return "Expected {e} found {f} at {a}".format(
-                e=repr(expected), f=repr(found), a=position)
+        line = self.source.get_current_line()
+        position = self.source.get_current_line_pos()
+        return "Expected {e} found {f} at {l}:{p}\n\nSource:\n{s}".format(
+            e=repr(expected), f=repr(found), l=line, p=position,
+            s=str(self.source))

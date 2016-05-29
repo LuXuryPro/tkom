@@ -59,3 +59,38 @@ def test_http_source_is_steam_end():
     assert test_source.is_stream_end() == False
     test_source.next_char()
     assert test_source.is_stream_end() == True
+
+
+def test_source_line_switch():
+    test_source = Source("a\r\nb\r\nc")
+    assert test_source.get_current_line() == 1
+    assert test_source.get_current_line_pos() == 0
+    test_source.next_char()
+    assert test_source.get_current_line() == 1
+    assert test_source.get_current_line_pos() == 1
+    test_source.next_char()
+    assert test_source.get_current_line() == 1
+    assert test_source.get_current_line_pos() == 2
+    test_source.next_char()
+    assert test_source.get_current_line() == 1
+    assert test_source.get_current_line_pos() == 3
+
+    test_source.next_char()
+    assert test_source.get_current_line() == 2
+    assert test_source.get_current_line_pos() == 1
+    test_source.next_char()
+    assert test_source.get_current_line() == 2
+    assert test_source.get_current_line_pos() == 2
+    test_source.next_char()
+    assert test_source.get_current_line() == 2
+    assert test_source.get_current_line_pos() == 3
+
+    test_source.prev_char()
+    assert test_source.get_current_line() == 2
+    assert test_source.get_current_line_pos() == 2
+    test_source.prev_char()
+    assert test_source.get_current_line() == 2
+    assert test_source.get_current_line_pos() == 1
+    test_source.prev_char()
+    assert test_source.get_current_line() == 1
+    assert test_source.get_current_line_pos() == 3
