@@ -67,8 +67,12 @@ def main(args=None):
     if a.OUTPUT_FILE:
         sys.stdout = open(a.OUTPUT_FILE, "a")
     if a.INPUT_FILE:
-        with open(a.INPUT_FILE) as f:
-            do_filtering(f, query_parser)
+        try:
+            with open(a.INPUT_FILE) as f:
+                do_filtering(f, query_parser)
+        except FileNotFoundError as e:
+            print("File " + a.INPUT_FILE + " not found")
+            sys.exit(-1)
     else:
         do_filtering(sys.stdin, query_parser)
 
