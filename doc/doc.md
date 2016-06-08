@@ -1,4 +1,4 @@
-# TKOM - Projekt - dokumentacja wstępna
+# TKOM - Projekt - dokumentacja końcowa
 Wykonał:
 Radosław Załuska
 
@@ -20,25 +20,25 @@ zapytania wyświetlić oraz na jakiej podstawie filtrować.
 ## Gramatyka
 ### HTTP Request
 ```bnf
-Slash      ::= "/"
-NewLine    ::= "CRLF"
-Signature  ::= "HTTP"
-Colon      ::= ":"
-Dot        ::= "."
-Char       ::= "A-Za-z0-9!@#$%^&*()_-+="
-String     ::= Char*
-Digit      ::= "0-9"
+Slash       ::= "/"
+NewLine     ::= "CRLF"
+Signature   ::= "HTTP"
+Colon       ::= ":"
+Dot         ::= "."
+Char        ::= "A-Za-z0-9!@#$%^&*()_-+="
+String      ::= Char*
+Digit       ::= "0-9"
 
 HTTPRequest ::= Status NewLine Headers NewLine Body NewLine
-Status     ::= Method URL Signature Slash Version
-Method     ::= String
-URL        ::= Slash (String Slash | String)*
-Version    ::= Digit Dot Digit
-StatusCode ::= Digit Digit Digit
-Headers    ::= Header*
-Header     ::= Key Colon Value NewLine
-Body       ::= String
-Key        ::= String
+Status      ::= Method URL Signature Slash Version
+Method      ::= String
+URL         ::= Slash (String Slash | String)*
+Version     ::= Digit Dot Digit
+StatusCode  ::= Digit Digit Digit
+Headers     ::= Header*
+Header      ::= Key Colon Value NewLine
+Body        ::= String
+Key         ::= String
 ```
 
 
@@ -86,33 +86,30 @@ Key        ::= String
 
 ### Język zapytań
 ```bnf
-Char       ::= "A-Za-z0-9!@#$%^&*()_-+="
-String     ::= Char*
-MatchOperator ::= "=~"
-NotOperator ::= "not"
-EqOperator  ::= "=="
-Comma       ::= ","
-AndOperator ::= "and"
-OrOperator  ::= "or"
-LeftBrace   ::= "("
-RightBrace  ::= ")"
-Quote       ::= '"'
-Keyword     ::= 'if'
+Char            ::= "A-Za-z0-9!@#$%^&*()_-+="
+String          ::= Char*
+MatchOperator   ::= "=~"
+NotOperator     ::= "not"
+EqOperator      ::= "=="
+Comma           ::= ","
+AndOperator     ::= "and"
+OrOperator      ::= "or"
+LeftBrace       ::= "("
+RightBrace      ::= ")"
+Quote           ::= '"'
+Keyword         ::= 'if'
 
-Query      ::= Field | Field Keyword Expression
-Field     ::=  String (Comma Field)*
-Header     ::= Key
-Key        ::= String
-Expression ::= LeftBrace Expression RightBrace
-Expression ::= EqExpression
-Expression ::= NotExpression
-Expression ::= MatchExpression
-Expression ::= Expression AndOperator Expression
-Expression ::= Expression OrOperator Expression
-EqExpression ::= Field EqOperator Val
-NotExpression ::= NotOperator Expression
+Query           ::= Field | Field Keyword Expression
+Field           ::= String (Comma Field)*
+Header          ::= Key
+Key             ::= String
+Expression      ::= Term (OrOperator Term)*
+Term            ::= Factor (AndOperator Factor)*
+Factor          ::= Constant| NotOperator Factor | (Expression)
+Constant        ::= EqExpression|MatchExpression
+EqExpression    ::= Field EqOperator Val
 MatchExpression ::= Field MatchOperator Val
-Val            ::= Quote String Quote
+Val             ::= Quote String Quote
 ```
 
 ![
@@ -236,13 +233,22 @@ test=test
 ## Rezultat wykonania przykładowych filtrów na podanym pliku wejściowym
 ```bash
 $ cat input.txt | ./http-filter 'method,url if host == "www.wp.pl"'
-1: {"method" : "GET", "url": "/"}
+##########
+method = POST
+url = /plugins/phsys.php
+
 $ cat input.txt | ./http-filter 'method,url if user-agent =~ "python"'
-1: {"method" : "GET", "url": "/"}
-2: {"method" : "GET", "url": "/"}
-3: {"method" : "POST", "url": "/"}
+##########
+method = POST
+url = /plugins/phsys.php
+##########
+method = GET
+url = /
+
 $ cat input.txt | ./http-filter 'body if method == "POST"'
-1: {"body" : "test=test"}
+##########
+body = user=asd&pass=asd
+
 ```
 
 # Projekt realizacji parsowania zapytań HTTP
@@ -281,21 +287,12 @@ dla HTTP. Pakiety niepoprawne zostaną odrzucone. Analizator semantyczny generuj
 na wyjściu abstrakcyjny obiekt zapytania http z odpowiednimi polami do których
 łatwo można się odwołać w programie.
 
-![](schemat.pdf)
-
 # Projekt realizacji dla prostego języka filtrowania
 Analizator leksykalny, syntaktyczny i semantyczny analogicznie jak w przypadku
 parsera zapytań. W tym przypadku nie ma modułu Source gdyż zapytanie trafia do
 programu z linii poleceń i nie ma potrzeby odczytywać go z pliku. Zadanie
 śledzenia numeru kolumny przejmie moduł Query znacząco uproszczony w porównaniu
 do HTTPRequest.
-
-## Ewaluacja wyrażenia boolowksiego w warunku
-Po dokananiu analizay semantycznej drzewo rozbioru zostanie przeanalizowane i
-zamienione na stos. Dzięki temu zostaną zoptymalizowane nawiasy i kolejność
-wykonywania sprawdzeń. Na otrzymanym stosie operatory i wartości będą zdejmowane
-od góry.  Na szczycie stusu będzie się pojawiać wartość wynikowa.
-![](stos.pdf)
 
 # Algorytm działania
 ```python
